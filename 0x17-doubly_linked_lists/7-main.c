@@ -1,31 +1,58 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "lists.h"
 
 /**
- * main - check the code for Holberton School students.
+ * dlistint_len - returns the number of nodes in a doubly linked list
+ * @h: pointer to the list
  *
- * Return: Always EXIT_SUCCESS.
+ * Return: number of nodes
  */
-int main(void)
-{
-    dlistint_t *head;
+size_t dlistint_len(const dlistint_t *h) {
+  size_t nodes = 0;
 
-    head = NULL;
-    add_dnodeint_end(&head, 0);
-    add_dnodeint_end(&head, 1);
-    add_dnodeint_end(&head, 2);
-    add_dnodeint_end(&head, 3);
-    add_dnodeint_end(&head, 4);
-    add_dnodeint_end(&head, 98);
-    add_dnodeint_end(&head, 402);
-    add_dnodeint_end(&head, 1024);
-    print_dlistint(head);
-    printf("-----------------\n");
-    insert_dnodeint_at_index(&head, 5, 4096);
-    print_dlistint(head);
-    free_dlistint(head);
-    head = NULL;
-    return (EXIT_SUCCESS);
+  if (!h)
+    return (0);
+
+  while (h) {
+    nodes++;
+    h = h->next;
+  }
+
+  return (nodes);
+}
+
+/**
+ * delete_dnodeint_at_index - deltes a node in a doubly linked list
+ * at a given index
+ * @head: double pointer to the list
+ * @index: index of the node to delete
+ *
+ * Return: 1 on success, -1 on failure
+ */
+int delete_dnodeint_at_index(dlistint_t **head, unsigned int index) {
+  dlistint_t *temp = *head;
+  unsigned int i = 0;
+
+  if (*head == NULL || dlistint_len(temp) < index + 1)
+    return (-1);
+
+  if (!index) {
+    (*head) = temp->next;
+    if (temp->next)
+      temp->next->prev = NULL;
+    temp->next = NULL;
+    free(temp);
+    return (1);
+  }
+
+  while (i < index) {
+    temp = temp->next;
+    i++;
+  }
+
+  temp->prev->next = temp->next;
+  if (temp->next)
+    temp->next->prev = temp->prev;
+  free(temp);
+
+  return (1);
 }
